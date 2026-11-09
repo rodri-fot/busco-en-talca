@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Busco en Talca · Oficios y peguitas</title>
+<meta name="description" content="Encuentra gásfiter, electricistas, maestros y más en Talca. Publica tu oficio gratis.">
+<style>
+  :root { --azul:#1d4ed8; --azul-osc:#1e3a8a; --verde:#16a34a; --gris:#f3f4f6; --texto:#1f2937; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color:var(--texto); background:#fff; line-height:1.5; }
+  .wrap { max-width:720px; margin:0 auto; padding:0 20px; }
+  .portada { display:block; width:100%; max-height:520px; object-fit:cover; object-position:center bottom; }
+  header { background:linear-gradient(135deg,var(--azul),var(--azul-osc)); color:#fff; padding:36px 0 40px; text-align:center; }
+  header h1 { font-size:1.9rem; line-height:1.15; }
+  header p { margin-top:12px; font-size:1.1rem; opacity:.92; }
+  .btn { display:block; text-align:center; text-decoration:none; font-weight:700; padding:16px; border-radius:12px; margin-top:14px; font-size:1.05rem; }
+  .btn-fb2 { background:#facc15; color:#1f2937; }
+  .btn-fb { background:#fff; color:var(--azul); }
+  .btn-sec { background:var(--gris); color:var(--texto); border:1px solid #e5e7eb; }
+  .ctas { margin-top:28px; }
+  section { padding:40px 0; }
+  section h2 { font-size:1.4rem; margin-bottom:16px; }
+  .pasos { list-style:none; counter-reset:p; }
+  .pasos li { counter-increment:p; padding:12px 0 12px 48px; position:relative; border-bottom:1px solid #eee; }
+  .pasos li::before { content:counter(p); position:absolute; left:0; top:10px; width:32px; height:32px; border-radius:50%; background:var(--azul); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .oficios { display:flex; flex-wrap:wrap; gap:8px; }
+  .oficios span { background:var(--gris); padding:8px 14px; border-radius:999px; font-size:.95rem; }
+  .gris { background:var(--gris); }
+  .red a { margin-top:10px; }
+  footer { text-align:center; font-size:.85rem; color:#6b7280; padding:28px 0; }
+  .contador { background:#facc15; text-align:center; padding:28px 0; display:none; }
+  .contador p { font-size:1.25rem; font-weight:600; }
+  .contador .num { display:block; font-size:3rem; font-weight:900; color:var(--azul-osc); line-height:1.1; }
+</style>
+</head>
+<body>
+
+<img class="portada" src="portada.jpg" alt="Busco en Talca - Catedral de Talca y Plaza de Armas">
+
+<header>
+  <div class="wrap">
+    <h1>Oficios y peguitas en Talca</h1>
+    <p>Encuentra quién te ayude o publica tu oficio <strong>gratis</strong>.</p>
+    <div class="ctas">
+      <a class="btn btn-fb" href="https://www.facebook.com/1417537478103813">Ir a la página de Facebook</a>
+    </div>
+  </div>
+</header>
+
+<div class="contador" id="contador">
+  <div class="wrap">
+    <p>Ya somos <span class="num" id="num">0</span> miembros de esta familia y creciendo</p>
+  </div>
+</div>
+<script>
+  // El número se lee de miembros.json. Para actualizarlo, edita solo ese archivo.
+  fetch('miembros.json?v=' + Date.now())
+    .then(r => r.json())
+    .then(d => {
+      const total = parseInt(d.miembros, 10);
+      if (!total) return;               // si es 0 o falta, no se muestra nada
+      document.getElementById('contador').style.display = 'block';
+      const el = document.getElementById('num');
+      const dur = 1800, t0 = performance.now();
+      (function paso(t) {
+        const k = Math.min((t - t0) / dur, 1);
+        el.textContent = Math.round(total * (1 - Math.pow(1 - k, 3))).toLocaleString('es-CL');
+        if (k < 1) requestAnimationFrame(paso);
+      })(t0);
+    })
+    .catch(() => {});
+</script>
+
+<section>
+  <div class="wrap">
+    <h2>¿Cómo publicar? Es gratis</h2>
+    <ul class="pasos">
+      <li>Sigue nuestra página de Facebook (así podemos etiquetarte).</li>
+      <li>Envíanos un mensaje a la página con tu <strong>oficio</strong> y tu <strong>número de contacto</strong>.</li>
+      <li>Publicamos tu aviso y te etiquetamos para que te contacten directo.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="gris">
+  <div class="wrap">
+    <h2>Lo que más se busca</h2>
+    <div class="oficios">
+      <span>Gásfiter</span><span>Electricista</span><span>Maestro albañil</span>
+      <span>Pintor</span><span>Soldador</span><span>Jardinero</span>
+      <span>Fletes</span><span>Aseo</span><span>Carpintero</span>
+      <span>Cerrajero</span><span>Mecánico</span><span>Técnico en refrigeración</span>
+    </div>
+  </div>
+</section>
+
+<section class="red">
+  <div class="wrap">
+    <h2>Red Busco en el Maule</h2>
+    <p>¿Estás en otra comuna? También estamos en:</p>
+    <a class="btn btn-sec" href="https://www.facebook.com/1460166710504411">Busco en Linares</a>
+    <a class="btn btn-sec" href="https://www.facebook.com/1374336859104947">Busco en San Javier</a>
+    <a class="btn btn-sec" href="https://www.facebook.com/1422818767582409">Busco en Cauquenes, Chanco y Pelluhue</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Busco Oficios · Red de oficios y peguitas del Maule
+  </div>
+</footer>
+
+</body>
+</html>
