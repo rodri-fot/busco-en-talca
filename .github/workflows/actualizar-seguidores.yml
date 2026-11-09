@@ -1,0 +1,36 @@
+name: Actualizar seguidores
+
+on:
+  schedule:
+    - cron: "0 12 * * *"   # todos los días a las 9:00 (hora Chile, aprox.)
+  workflow_dispatch:        # permite ejecutarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Consultar seguidores en Meta
+        env:
+          PAGE_ID: "1417537478103813"            # Busco en Talca
+          FB_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: |
+          RESP=$(curl -s "https://graph.facebook.com/${PAGE_ID}?fields=followers_count&access_token=${FB_TOKEN}")
+          N=$(echo "$RESP" | jq -r '.followers_count // empty')
+          if [ -z "$N" ]; then
+            echo "Error al consultar Meta:"; echo "$RESP" | jq 'del(.access_token)'; exit 1
+          fi
+          echo "Seguidores: $N"
+          printf '{\n  "miembros": %s,\n  "actualizado": "%s"\n}\n' "$N" "$(date -u +%Y-%m-%d)" > miembros.json
+
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add miembros.json
+          git commit -m "Actualizar seguidores" || echo "Sin cambios"
+          git push
